@@ -1,5 +1,13 @@
 [Unit]
 Description=Monitor charge_control_end_threshold
 
+[Unit]
+# The charge controller fires this monitor in bursts during USB-PD
+# renegotiation. The triggered service is idempotent (flock-guarded, writes one
+# line, exits in milliseconds), so rate limiting protects nothing and only
+# leaves the monitor failed and persistence dead until the next uevent.
+StartLimitIntervalSec=0
+
 [Path]
 PathChanged=/sys/class/power_supply/macsmc-battery/charge_control_end_threshold
+TriggerLimitBurst=0
